@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sathi — your daily companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FBF5EA;
+    --paper-raised: #F3ECDC;
+    --ink: #22303B;
+    --ink-soft: #4E5E68;
+    --line: #DED3BC;
+    --marigold: #C9852E;
+    --marigold-soft: #F2DDB4;
+    --teal: #2E6B78;
+    --teal-soft: #D9E9EB;
+    --brick: #A6432A;
+    --brick-soft: #F1DAD1;
+    --sage: #5A7A5E;
+    --sage-soft: #DEE8DD;
+    --radius-s: 10px;
+    --radius-m: 16px;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Atkinson Hyperlegible', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --step: 1;
+    --focus: #2E6B78;
+  }
+
+  :root[data-theme="dark"], :root:not([data-theme="light"]) {
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #1B211F;
+      --paper-raised: #242B28;
+      --ink: #F1EBDD;
+      --ink-soft: #C7C0AF;
+      --line: #3B443F;
+      --marigold: #E3A24C;
+      --marigold-soft: #4A3A20;
+      --teal: #6FB0BC;
+      --teal-soft: #223638;
+      --brick: #D97C5E;
+      --brick-soft: #452720;
+      --sage: #8FB893;
+      --sage-soft: #26332A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #1B211F;
+    --paper-raised: #242B28;
+    --ink: #F1EBDD;
+    --ink-soft: #C7C0AF;
+    --line: #3B443F;
+    --marigold: #E3A24C;
+    --marigold-soft: #4A3A20;
+    --teal: #6FB0BC;
+    --teal-soft: #223638;
+    --brick: #D97C5E;
+    --brick-soft: #452720;
+    --sage: #8FB893;
+    --sage-soft: #26332A;
+  }
+
+  :root[data-contrast="high"] {
+    --paper: #FFFFFF;
+    --ink: #000000;
+    --ink-soft: #1a1a1a;
+    --line: #000000;
+    --marigold: #8a5200;
+    --teal: #00525f;
+    --brick: #7a1f00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-contrast="high"]:not([data-theme="light"]) {
+      --paper: #000000;
+      --ink: #FFFFFF;
+      --ink-soft: #EDEDED;
+      --line: #FFFFFF;
+      --marigold: #FFC369;
+      --teal: #8FE0EC;
+      --brick: #FFA98C;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: calc(17px * var(--step));
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--teal); }
+  button { font-family: inherit; }
+  img, svg { max-width: 100%; }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 90px;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 22px 24px 10px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .brand .mark {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--marigold);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--serif);
+    font-weight: 600;
+    color: var(--paper);
+    font-size: 17px;
+    flex: none;
+  }
+  .brand .name {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  .a11y-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .a11y-controls button {
+    border: 1.5px solid var(--line);
+    background: var(--paper-raised);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .a11y-controls button:hover { border-color: var(--teal); }
+  .a11y-controls button.active {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: var(--paper);
+  }
+  button:focus-visible, a:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 18px 0 6px;
+  }
+  .hero .date {
+    color: var(--ink-soft);
+    font-size: 0.92em;
+    margin: 0 0 2px;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(28px, 5.5vw, 38px);
+    margin: 0 0 18px;
+    line-height: 1.2;
+  }
+
+  .focus-card {
+    background: var(--marigold-soft);
+    border: 1.5px solid var(--marigold);
+    border-radius: var(--radius-m);
+    padding: 22px 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .focus-card .dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--marigold);
+    margin-top: 9px;
+    flex: none;
+  }
+  .focus-card .eyebrow {
+    font-size: 0.85em;
+    color: var(--ink-soft);
+    margin: 0 0 4px;
+  }
+  .focus-card p.msg {
+    margin: 0 0 16px;
+    font-size: 1.15em;
+  }
+  .focus-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    border: none;
+    border-radius: var(--radius-s);
+    padding: 13px 20px;
+    font-size: 0.98em;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: var(--sans);
+  }
+  .btn-primary { background: var(--teal); color: var(--paper); }
+  .btn-ghost { background: transparent; border: 1.5px solid var(--ink-soft); color: var(--ink); }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .focus-card.done {
+    background: var(--sage-soft);
+    border-color: var(--sage);
+  }
+  .focus-card.done .dot { background: var(--sage); }
+
+  /* ---------- Section heading ---------- */
+  .section { margin-top: 52px; }
+  .section h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 1.55em;
+    margin: 0 0 6px;
+  }
+  .section .sub {
+    color: var(--ink-soft);
+    margin: 0 0 20px;
+    font-size: 0.96em;
+    max-width: 56ch;
+  }
+
+  /* ---------- Task list ---------- */
+  .tasklist { border-top: 1.5px solid var(--line); }
+  .task {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1.5px solid var(--line);
+  }
+  .task time {
+    width: 78px;
+    flex: none;
+    color: var(--ink-soft);
+    font-size: 0.9em;
+  }
+  .task .check {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--ink-soft);
+    background: transparent;
+    flex: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--paper);
+  }
+  .task .check svg { width: 16px; height: 16px; display: none; }
+  .task.done .check { background: var(--sage); border-color: var(--sage); }
+  .task.done .check svg { display: block; }
+  .task .label { flex: 1; }
+  .task.done .label { color: var(--ink-soft); text-decoration: line-through; text-decoration-color: var(--line); }
+  .task .tag {
+    font-size: 0.78em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--teal-soft);
+    color: var(--teal);
+    flex: none;
+  }
+
+  /* ---------- Ask Sathi ---------- */
+  .ask-panel {
+    background: var(--paper-raised);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-m);
+    padding: 22px;
+  }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .chip {
+    border: 1.5px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-size: 0.88em;
+    cursor: pointer;
+    text-align: left;
+  }
+  .chip:hover { border-color: var(--teal); }
+  .ask-row { display: flex; gap: 10px; }
+  .ask-row input[type="text"] {
+    flex: 1;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-s);
+    padding: 14px 16px;
+    font-size: 1em;
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .ask-reply {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1.5px solid var(--line);
+    display: none;
+  }
+  .ask-reply.show { display: block; }
+  .ask-reply .who {
+    font-size: 0.82em;
+    color: var(--ink-soft);
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ask-reply .body { margin: 0 0 14px; font-size: 1.05em; }
+  .ask-reply .body ol, .ask-reply .body ul { margin: 8px 0 0; padding-left: 22px; }
+  .ask-reply .body li { margin-bottom: 6px; }
+  .listen-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: none; border: 1.5px solid var(--teal); color: var(--teal);
+    border-radius: 999px; padding: 8px 14px; font-size: 0.88em; cursor: pointer;
+  }
+  .listen-btn.speaking { background: var(--teal); color: var(--paper); }
+
+  /* ---------- Learn accordion ---------- */
+  .accordion-item {
+    border-bottom: 1.5px solid var(--line);
+  }
+  .accordion-item:first-child { border-top: 1.5px solid var(--line); }
+  .accordion-item button.q {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 18px 4px;
+    font-size: 1.08em;
+    font-weight: 700;
+    color: var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+  }
+  .accordion-item .plus { font-size: 1.3em; color: var(--teal); flex: none; }
+  .accordion-item .a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+  }
+  .accordion-item.open .a { max-height: 420px; }
+  .accordion-item .a-inner { padding: 0 4px 20px; }
+  .accordion-item .a-inner p { margin: 0 0 14px; }
+
+  /* ---------- Contacts ---------- */
+  .contacts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .contact-card {
+    border: 1.5px solid var(--line);
+    background: var(--paper-raised);
+    border-radius: var(--radius-m);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .contact-card .who { font-weight: 700; }
+  .contact-card .rel { color: var(--ink-soft); font-size: 0.88em; }
+  .contact-card a.call {
+    margin-top: auto;
+    display: inline-block;
+    text-align: center;
+    background: var(--teal);
+    color: var(--paper);
+    text-decoration: none;
+    border-radius: var(--radius-s);
+    padding: 10px;
+    font-weight: 700;
+    font-size: 0.92em;
+  }
+  .sos {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    background: var(--brick-soft);
+    border: 1.5px solid var(--brick);
+    border-radius: var(--radius-m);
+    padding: 16px 20px;
+  }
+  .sos .txt { font-size: 0.95em; }
+  .sos .txt strong { display: block; font-size: 1.05em; margin-bottom: 2px; }
+  .sos a {
+    background: var(--brick);
+    color: var(--paper);
+    text-decoration: none;
+    padding: 11px 18px;
+    border-radius: var(--radius-s);
+    font-weight: 700;
+    flex: none;
+  }
+
+  footer {
+    max-width: 760px;
+    margin: 60px auto 0;
+    padding: 20px 24px 30px;
+    color: var(--ink-soft);
+    font-size: 0.85em;
+    border-top: 1.5px solid var(--line);
+  }
+
+  @media (max-width: 480px) {
+    .contacts { grid-template-columns: 1fr; }
+    .task time { width: 60px; font-size: 0.82em; }
+    .ask-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="mark">स</span>
+    <span class="name">Sathi</span>
+  </div>
+  <div class="a11y-controls" role="group" aria-label="Reading settings">
+    <button id="fontDown" aria-label="Smaller text">A−</button>
+    <button id="fontUp" aria-label="Larger text">A+</button>
+    <button id="contrastToggle" aria-pressed="false">High contrast</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section class="hero">
+    <p class="date" id="todayDate"></p>
+    <h1 id="greeting">Good morning.</h1>
+
+    <div class="focus-card" id="focusCard">
+      <div class="dot" aria-hidden="true"></div>
+      <div style="flex:1">
+        <p class="eyebrow">Right now</p>
+        <p class="msg" id="focusMsg">It's almost 9:00 AM — time for your blood pressure tablet.</p>
+        <div class="focus-actions">
+          <button class="btn btn-primary" id="focusDone">Mark as taken</button>
+          <button class="btn btn-ghost" id="focusSnooze">Remind me in 15 minutes</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="todayHeading">
+    <h2 id="todayHeading">Today</h2>
+    <p class="sub">Three things on your plate today. Tap the circle once you've done one.</p>
+    <div class="tasklist" id="taskList">
+      <div class="task" data-tag="Health">
+        <time>9:00 AM</time>
+        <button class="check" aria-label="Mark blood pressure tablet as done">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg>
+        </button>
+        <span class="label">Take blood pressure tablet</span>
+        <span class="tag">Health</span>
+      </div>
+      <div class="task" data-tag="Family">
+        <time>11:30 AM</time>
+        <button class="check" aria-label="Mark video call with Aarav as done">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg>
+        </button>
+        <span class="label">Video call with Aarav (son)</span>
+        <span class="tag">Family</span>
+      </div>
+      <div class="task" data-tag="Bills">
+        <time>4:00 PM</time>
+        <button class="check" aria-label="Mark electricity bill as done">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg>
+        </button>
+        <span class="label">Pay the electricity bill — ₹1,240 due</span>
+        <span class="tag">Bills</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="askHeading">
+    <h2 id="askHeading">Ask Sathi</h2>
+    <p class="sub">Type a question in plain words, or tap one below. Sathi answers in simple steps and can read the answer out loud.</p>
+    <div class="ask-panel">
+      <div class="chips" id="chips">
+        <button class="chip" data-q="How do I make the text bigger on my phone?">Make my phone's text bigger</button>
+        <button class="chip" data-q="Someone called asking for an OTP, is that safe?">Is it safe to share an OTP?</button>
+        <button class="chip" data-q="How do I video call my grandchildren?">Video call my grandchildren</button>
+        <button class="chip" data-q="How do I pay my electricity bill online?">Pay a bill online</button>
+      </div>
+      <div class="ask-row">
+        <label for="askInput" class="visually-hidden" style="position:absolute;left:-9999px;">Ask Sathi a question</label>
+        <input type="text" id="askInput" placeholder="Type your question here…">
+        <button class="btn btn-primary" id="askBtn">Ask</button>
+      </div>
+      <div class="ask-reply" id="askReply">
+        <p class="who">Sathi's answer <button class="listen-btn" id="listenBtn" type="button">🔊 Read aloud</button></p>
+        <div class="body" id="askBody"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="learnHeading">
+    <h2 id="learnHeading">Learn as you go</h2>
+    <p class="sub">Short, plain explanations for things that come up often. Open one whenever you like — nothing to remember in advance.</p>
+    <div id="accordion">
+      <div class="accordion-item">
+        <button class="q" aria-expanded="false">What is an OTP, and why do people ask for it?</button>
+        <div class="a"><div class="a-inner">
+          <p>An OTP (One-Time Password) is a short code sent to your phone by your bank or an app, to prove it's really you. It is meant for you alone.</p>
+          <p><strong>A simple rule:</strong> your bank, a shop, or a delivery service will never call and ask you to tell them your OTP. If anyone asks for it over the phone, it's safe to say no and hang up.</p>
+        </div></div>
+      </div>
+      <div class="accordion-item">
+        <button class="q" aria-expanded="false">How do I video call my grandchildren?</button>
+        <div class="a"><div class="a-inner">
+          <p>Open WhatsApp, tap the person's name, then tap the small video camera icon at the top right. It starts ringing on their phone right away — no need to type anything.</p>
+          <p>If you'd like, Sathi can add a large "Video call Aarav" button to your home screen so you don't need to search for it each time.</p>
+        </div></div>
+      </div>
+      <div class="accordion-item">
+        <button class="q" aria-expanded="false">How do I know if a call or message is a scam?</button>
+        <div class="a"><div class="a-inner">
+          <p>Be cautious if a caller creates urgency ("act now or your account will be blocked"), asks for money, an OTP, or your card PIN, or claims to be from the police, a bank, or a courier with a problem only you can fix by paying.</p>
+          <p>It's always alright to hang up and call a family member or the bank's official number yourself before doing anything.</p>
+        </div></div>
+      </div>
+      <div class="accordion-item">
+        <button class="q" aria-expanded="false">How do I pay my electricity bill online?</button>
+        <div class="a"><div class="a-inner">
+          <p>Open Google Pay or PhonePe, tap "Bills", choose your electricity board, and enter your consumer number (found on last month's paper bill). It will show the amount due — check it matches your bill, then confirm with your UPI PIN.</p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="contactsHeading">
+    <h2 id="contactsHeading">In case you need help</h2>
+    <p class="sub">People who can be reached in one tap, and emergency numbers if it's urgent.</p>
+    <div class="contacts">
+      <div class="contact-card">
+        <span class="who">Aarav</span>
+        <span class="rel">Son · usually free after 6 PM</span>
+        <a class="call" href="tel:+911234500001">Call Aarav</a>
+      </div>
+      <div class="contact-card">
+        <span class="who">Priya</span>
+        <span class="rel">Daughter · lives nearby</span>
+        <a class="call" href="tel:+911234500002">Call Priya</a>
+      </div>
+    </div>
+    <div class="sos">
+      <div class="txt">
+        <strong>Need urgent help?</strong>
+        Emergency services, anywhere in India
+      </div>
+      <a href="tel:112">Call 112</a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Sathi — a warm-up prototype for PromptWars. Built to make everyday digital tasks feel simple, safe, and unhurried.
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+
+  // ---- Greeting + date ----
+  var d = new Date();
+  var hour = d.getHours();
+  var greetingWord = hour < 12 ? "Good morning." : (hour < 17 ? "Good afternoon." : "Good evening.");
+  document.getElementById('greeting').textContent = greetingWord;
+  document.getElementById('todayDate').textContent = d.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
+
+  // ---- Font size + contrast, persisted per-viewer ----
+  var STORE_KEY = 'sathi-prefs';
+  function loadPrefs() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      return raw ? JSON.parse(raw) : { step: 1, contrast: false };
+    } catch (e) { return { step: 1, contrast: false }; }
+  }
+  function savePrefs(p) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(p)); } catch (e) {}
+  }
+  var prefs = loadPrefs();
+  function applyPrefs() {
+    root.style.setProperty('--step', prefs.step);
+    root.setAttribute('data-contrast', prefs.contrast ? 'high' : 'normal');
+    document.getElementById('contrastToggle').classList.toggle('active', prefs.contrast);
+    document.getElementById('contrastToggle').setAttribute('aria-pressed', prefs.contrast ? 'true' : 'false');
+  }
+  applyPrefs();
+  document.getElementById('fontUp').addEventListener('click', function () {
+    prefs.step = Math.min(1.6, +(prefs.step + 0.1).toFixed(2));
+    applyPrefs(); savePrefs(prefs);
+  });
+  document.getElementById('fontDown').addEventListener('click', function () {
+    prefs.step = Math.max(0.85, +(prefs.step - 0.1).toFixed(2));
+    applyPrefs(); savePrefs(prefs);
+  });
+  document.getElementById('contrastToggle').addEventListener('click', function () {
+    prefs.contrast = !prefs.contrast;
+    applyPrefs(); savePrefs(prefs);
+  });
+
+  // ---- Focus card ----
+  var focusCard = document.getElementById('focusCard');
+  var focusMsg = document.getElementById('focusMsg');
+  document.getElementById('focusDone').addEventListener('click', function () {
+    focusCard.classList.add('done');
+    focusMsg.textContent = "Marked as done. Well done — next up is the video call with Aarav at 11:30 AM.";
+    this.style.display = 'none';
+    document.getElementById('focusSnooze').style.display = 'none';
+  });
+  document.getElementById('focusSnooze').addEventListener('click', function () {
+    focusMsg.textContent = "No problem — Sathi will gently remind you again in 15 minutes.";
+  });
+
+  // ---- Task list ----
+  document.querySelectorAll('.task .check').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      btn.closest('.task').classList.toggle('done');
+    });
+  });
+
+  // ---- Accordion ----
+  document.querySelectorAll('.accordion-item .q').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var item = btn.closest('.accordion-item');
+      var isOpen = item.classList.contains('open');
+      item.classList.toggle('open', !isOpen);
+      btn.setAttribute('aria-expanded', (!isOpen).toString());
+    });
+  });
+
+  // ---- Ask Sathi (canned, keyword-matched responses demonstrating the concept) ----
+  var answers = [
+    {
+      k: ['bigger', 'text size', 'font', 'zoom'],
+      html: "<p>Here's how to make text bigger on most phones:</p><ol><li>Open <strong>Settings</strong></li><li>Tap <strong>Display &amp; Brightness</strong></li><li>Look for <strong>Font size</strong> and slide it to the right</li></ol><p>This makes text bigger everywhere — WhatsApp, messages, everything.</p>",
+      speak: "Here's how to make text bigger on most phones. Open Settings. Tap Display and Brightness. Look for Font size and slide it to the right. This makes text bigger everywhere, including WhatsApp and messages."
+    },
+    {
+      k: ['otp', 'password', 'pin', 'scam', 'fraud'],
+      html: "<p>No — please don't share an OTP over the phone, even if the caller sounds official.</p><p>Banks, shops, and delivery companies never need you to read out an OTP to them. It's completely safe to say <em>\"I won't share that\"</em> and hang up. If you're unsure, call a family member first.</p>",
+      speak: "No, please don't share an OTP over the phone, even if the caller sounds official. Banks and shops never need you to read out an OTP to them. It's completely safe to say you won't share it and hang up."
+    },
+    {
+      k: ['video call', 'grandchildren', 'whatsapp call'],
+      html: "<p>To video call on WhatsApp:</p><ol><li>Open WhatsApp and tap the person's name</li><li>Tap the small camera icon at the top right</li><li>Wait a few seconds for them to answer</li></ol><p>Would you like a large \"Video call\" button added to your home screen for next time?</p>",
+      speak: "To video call on WhatsApp, open WhatsApp and tap the person's name. Tap the small camera icon at the top right. Wait a few seconds for them to answer."
+    },
+    {
+      k: ['bill', 'electricity', 'pay'],
+      html: "<p>To pay your electricity bill online:</p><ol><li>Open Google Pay or PhonePe</li><li>Tap <strong>Bills</strong>, then choose your electricity board</li><li>Enter the consumer number from last month's paper bill</li><li>Check the amount shown, then confirm with your UPI PIN</li></ol>",
+      speak: "To pay your electricity bill online, open Google Pay or PhonePe. Tap Bills, then choose your electricity board. Enter the consumer number from last month's paper bill. Check the amount shown, then confirm with your UPI PIN."
+    }
+  ];
+  var fallback = {
+    html: "<p>That's a good question — Sathi is still learning this one. For now, it's safest to ask a family member, or call Aarav using the button below when you're ready.</p>",
+    speak: "That's a good question. Sathi is still learning this one. For now, it's safest to ask a family member."
+  };
+
+  var askInput = document.getElementById('askInput');
+  var askReply = document.getElementById('askReply');
+  var askBody = document.getElementById('askBody');
+  var listenBtn = document.getElementById('listenBtn');
+  var currentSpeakText = '';
+
+  function answerFor(q) {
+    var lower = q.toLowerCase();
+    for (var i = 0; i < answers.length; i++) {
+      for (var j = 0; j < answers[i].k.length; j++) {
+        if (lower.indexOf(answers[i].k[j]) !== -1) return answers[i];
+      }
+    }
+    return fallback;
+  }
+
+  function ask(q) {
+    if (!q || !q.trim()) return;
+    var ans = answerFor(q);
+    askBody.innerHTML = ans.html;
+    currentSpeakText = ans.speak;
+    askReply.classList.add('show');
+    askReply.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  document.getElementById('askBtn').addEventListener('click', function () {
+    ask(askInput.value);
+  });
+  askInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') ask(askInput.value);
+  });
+  document.querySelectorAll('.chip').forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      askInput.value = chip.getAttribute('data-q');
+      ask(askInput.value);
+    });
+  });
+
+  // ---- Read aloud (Web Speech API — works fully offline in-browser) ----
+  function speak(text) {
+    if (!('speechSynthesis' in window)) {
+      alert("This device doesn't support reading text aloud.");
+      return;
+    }
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.92;
+    u.onstart = function () { listenBtn.classList.add('speaking'); listenBtn.textContent = '⏸ Reading…'; };
+    u.onend = function () { listenBtn.classList.remove('speaking'); listenBtn.textContent = '🔊 Read aloud'; };
+    window.speechSynthesis.speak(u);
+  }
+  listenBtn.addEventListener('click', function () {
+    if (window.speechSynthesis && window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      listenBtn.classList.remove('speaking');
+      listenBtn.textContent = '🔊 Read aloud';
+      return;
+    }
+    if (currentSpeakText) speak(currentSpeakText);
+  });
+})();
+</script>
+
+</body>
+</html>
